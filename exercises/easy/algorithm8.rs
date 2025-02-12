@@ -1,8 +1,7 @@
 /*
-	queue
-	This question requires you to use queues to implement the functionality of the stac
+    queue
+    This question requires you to use queues to implement the functionality of the stac
 */
-
 
 #[derive(Debug)]
 pub struct Queue<T> {
@@ -51,42 +50,68 @@ impl<T> Default for Queue<T> {
         }
     }
 }
-
-pub struct myStack<T>
-{
-	//TODO
-	q1:Queue<T>,
-	q2:Queue<T>
+#[derive(Debug)]
+pub struct MyStack<T> {
+    //TODO
+    q1: Queue<T>,
+    q2: Queue<T>,
+    taker_flag: bool,//true=1,false=2
+    size:u32
 }
-impl<T> myStack<T> {
+impl<T: std::fmt::Debug> MyStack<T> {
     pub fn new() -> Self {
         Self {
-			//TODO
-			q1:Queue::<T>::new(),
-			q2:Queue::<T>::new()
+            //TODO
+            q1: Queue::<T>::new(),
+            q2: Queue::<T>::new(),
+            taker_flag: true,
+            size:0
+        }
+    }
+
+    fn stack_util(&mut self) -> (&mut Queue<T>, &mut Queue<T>,bool) {
+        if self.taker_flag {
+            (&mut self.q1, &mut self.q2,self.taker_flag)
+        } else {
+            (&mut self.q2, &mut self.q1,self.taker_flag)
         }
     }
     pub fn push(&mut self, elem: T) {
-        //TODO
+        let (taker, _,_) = Self::stack_util(self);
+        (*taker).enqueue(elem);
+        self.size+=1;
+        // println!("======self:{:?}",self);
     }
     pub fn pop(&mut self) -> Result<T, &str> {
-        //TODO
-		Err("Stack is empty")
+        if self.is_empty() {
+            Err("Stack is empty")
+        } else {
+            //将taker推入hub只留一个，取出，hub taker呼唤
+            let (taker, hub,taker_flag) = Self::stack_util(self);
+            let  peek_one;
+            let taker_size = (*taker).size();
+            for _ in 1..taker_size{
+                (*hub).enqueue((*taker).dequeue().unwrap())
+            }
+            peek_one = (*taker).dequeue().unwrap();
+            (*self).taker_flag = !taker_flag;
+            self.size-=1;
+            Ok(peek_one)
+        }
     }
     pub fn is_empty(&self) -> bool {
-		//TODO
-        true
+        self.size==0
     }
 }
 
 #[cfg(test)]
 mod tests {
-	use super::*;
-	
-	#[test]
-	fn test_queue(){
-		let mut s = myStack::<i32>::new();
-		assert_eq!(s.pop(), Err("Stack is empty"));
+    use super::*;
+
+    #[test]
+    fn test_queue() {
+        let mut s = MyStack::<i32>::new();
+        assert_eq!(s.pop(), Err("Stack is empty"));
         s.push(1);
         s.push(2);
         s.push(3);
@@ -100,5 +125,5 @@ mod tests {
         assert_eq!(s.pop(), Ok(1));
         assert_eq!(s.pop(), Err("Stack is empty"));
         assert_eq!(s.is_empty(), true);
-	}
+    }
 }

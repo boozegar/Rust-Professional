@@ -4,7 +4,7 @@ use std::path::{Path, PathBuf};
 use std::process::{Command, exit};
 use std::time::Instant;
 use std::io::{self, Write};
-
+use exercises::*;
 #[derive(Serialize, Deserialize, Debug, Clone)]
 struct Exercise {
     name: String,

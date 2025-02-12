@@ -1,6 +1,7 @@
 /*
 	heap
 	This question requires you to implement a binary heap function
+	https://www.hello-algo.com/chapter_heap/heap/
 */
 
 
