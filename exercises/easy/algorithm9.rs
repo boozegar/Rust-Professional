@@ -1,13 +1,14 @@
 /*
-	heap
-	This question requires you to implement a binary heap function
-	https://www.hello-algo.com/chapter_heap/heap/
+    heap
+    This question requires you to implement a binary heap function
+    https://www.hello-algo.com/chapter_heap/heap/
 */
-
 
 use std::cmp::Ord;
 use std::default::Default;
+use std::fmt::Debug;
 
+#[derive(Debug)]
 pub struct Heap<T>
 where
     T: Default,
@@ -19,7 +20,7 @@ where
 
 impl<T> Heap<T>
 where
-    T: Default,
+    T: Default ,
 {
     pub fn new(comparator: fn(&T, &T) -> bool) -> Self {
         Self {
@@ -38,7 +39,37 @@ where
     }
 
     pub fn add(&mut self, value: T) {
-        //TODO
+        
+        self.items.push(value);
+        self.count += 1;
+        self.heapify_up(self.count);
+        
+    }
+
+    fn heapify_up(&mut self, mut idx: usize) {
+        while idx > 1 {
+            let parent_idx = self.parent_idx(idx);
+            if (self.comparator)(&self.items[idx], &self.items[parent_idx]) {
+                self.items.swap(idx, parent_idx);
+                idx = parent_idx;
+            } else {
+                break;
+            }
+            
+        }
+    }
+
+    fn heapify_down(&mut self, mut idx: usize) {
+        //每次进行小堆化
+        while self.children_present(idx) {
+            let smallest_child_idx = self.smallest_child_idx(idx);
+            if (self.comparator)(&self.items[smallest_child_idx], &self.items[idx]) {
+                self.items.swap(idx, smallest_child_idx);
+                idx = smallest_child_idx;
+            } else {
+                break;
+            }
+        }
     }
 
     fn parent_idx(&self, idx: usize) -> usize {
@@ -58,14 +89,24 @@ where
     }
 
     fn smallest_child_idx(&self, idx: usize) -> usize {
-        //TODO
-		0
+        //TODO 这个就是该节点所在堆的最小子节点 假设判断了左节点存在
+        let left_child_idx = self.left_child_idx(idx);
+        let right_child_idx = self.right_child_idx(idx);
+        if  right_child_idx> self.count {
+            left_child_idx
+        }else {
+            if (self.comparator)(&self.items[left_child_idx], &self.items[right_child_idx]) {
+                left_child_idx
+            } else {
+                right_child_idx
+            }
+        }
     }
 }
 
 impl<T> Heap<T>
 where
-    T: Default + Ord,
+    T: Default + Ord ,
 {
     /// Create a new MinHeap
     pub fn new_min() -> Self {
@@ -80,13 +121,20 @@ where
 
 impl<T> Iterator for Heap<T>
 where
-    T: Default,
+    T: Default ,
 {
     type Item = T;
 
     fn next(&mut self) -> Option<T> {
-        //TODO
-		None
+        if self.is_empty() {
+            None
+        } else {
+            self.items.swap(1, self.count);
+            self.count -= 1;
+            let r = Some(self.items.pop().unwrap());
+            self.heapify_down(1);
+            r
+        }
     }
 }
 
@@ -96,7 +144,7 @@ impl MinHeap {
     #[allow(clippy::new_ret_no_self)]
     pub fn new<T>() -> Heap<T>
     where
-        T: Default + Ord,
+        T: Default + Ord ,
     {
         Heap::new(|a, b| a < b)
     }
@@ -108,7 +156,7 @@ impl MaxHeap {
     #[allow(clippy::new_ret_no_self)]
     pub fn new<T>() -> Heap<T>
     where
-        T: Default + Ord,
+        T: Default + Ord ,
     {
         Heap::new(|a, b| a > b)
     }

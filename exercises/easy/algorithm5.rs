@@ -3,8 +3,7 @@
     This problem requires you to implement a basic BFS algorithm
 */
 
-use log4rs::append::Append;
-use std::collections::{HashSet, VecDeque};
+use std::collections::{ VecDeque};
 
 // Define a graph
 struct Graph {
@@ -34,7 +33,7 @@ impl Graph {
         
         while !que.is_empty() {
             let p = que.pop_back().unwrap();
-            println!("visited===={:?}", visit_order);
+            // println!("visited===={:?}", visit_order);
             if !visit_order.contains(&p) {
                 visit_order.push(p);
                 for col in &self.adj[p] {

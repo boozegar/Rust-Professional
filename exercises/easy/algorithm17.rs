@@ -8,12 +8,27 @@
 
     Hint: You can solve this problem using sorting, hash sets, or the two-pointer technique.
 */
-
-use std::fmt::{self, Display, Formatter};
+use std::collections::{HashMap};
+use std::fmt::{Display};
 
 pub fn intersection(nums1: Vec<i32>, nums2: Vec<i32>) -> Vec<i32> {
     // TODO: Implement the logic to find the intersection of two arrays
-    Vec::new() // Placeholder return value
+    let mut map = HashMap::new();
+    for e1 in &nums1 {
+        map.insert(e1,0);
+    }
+    for e2 in &nums2{
+        if map.contains_key(e2){
+            map.insert(e2, 1);
+        }
+    }
+    let mut keys: Vec<i32> = map
+        .iter()
+        .filter(|(_, &value)| value == 1) // 过滤值不为 0 的条目
+        .map(|(&&key, _)| key) // 提取键
+        .collect();
+    keys.sort();
+    keys
 }
 
 #[cfg(test)]

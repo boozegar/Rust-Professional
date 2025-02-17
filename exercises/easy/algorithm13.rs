@@ -1,8 +1,8 @@
 /*
     Anagram Check
-    Given two strings, check if they are anagrams of each other. 
-    Anagrams are words or phrases formed by rearranging the letters of another, 
-    using all the original letters exactly once. 
+    Given two strings, check if they are anagrams of each other.
+    Anagrams are words or phrases formed by rearranging the letters of another,
+    using all the original letters exactly once.
     The strings may contain spaces or punctuation, but you need to ignore them while checking.
 
     You need to implement the function `are_anagrams(s1: String, s2: String) -> bool`.
@@ -15,7 +15,19 @@ use std::fmt::{self, Display, Formatter};
 
 pub fn are_anagrams(s1: String, s2: String) -> bool {
     // TODO: Implement the logic to check if two strings are anagrams
-    false // Placeholder return value
+    let filter_alphabetic = |s: &str| {
+        s.to_lowercase()
+            .chars()
+            .filter(|c| c.is_alphabetic())
+            .collect::<Vec<char>>()
+    };
+    let mut chars1: Vec<char> =filter_alphabetic(&s1);
+    let mut chars2: Vec<char> = filter_alphabetic(&s2);
+    chars1.sort();
+    chars2.sort();
+    // println!("{:?} {:?}",chars1,chars2);
+    chars1.eq(&chars2)
+ 
 }
 
 #[cfg(test)]
